@@ -1,0 +1,116 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#090b18">
+<title>NEON CASE ARENA</title>
+<style>
+:root{--bg:#090b18;--panel:#12172a;--panel2:#19213a;--line:#2b3658;--text:#f3f6ff;--muted:#9ba8c9;--cyan:#41e7ff;--pink:#ff4ecb;--gold:#ffd166;--green:#65f2a5}
+*{box-sizing:border-box}body{margin:0;background:radial-gradient(circle at 50% -20%,#24315d 0,#090b18 48%);color:var(--text);font:15px/1.45 system-ui,-apple-system,Segoe UI,Roboto,sans-serif;min-height:100vh}
+header{position:sticky;top:0;z-index:5;background:#090b18eF;border-bottom:1px solid var(--line);backdrop-filter:blur(14px);padding:13px max(16px,calc((100vw - 1100px)/2));display:flex;align-items:center;justify-content:space-between;gap:12px}
+.logo{font-weight:1000;letter-spacing:1.5px;font-size:18px}.logo span{color:var(--cyan);text-shadow:0 0 16px #41e7ff88}
+.coins{background:#202944;border:1px solid #46547c;border-radius:999px;padding:8px 13px;font-weight:800;color:var(--gold);white-space:nowrap}
+main{max-width:1100px;margin:auto;padding:20px 15px 55px}.hero{text-align:center;padding:22px 10px 24px}.hero h1{font-size:clamp(27px,6vw,48px);margin:0 0 5px;letter-spacing:2px}.hero h1 em{font-style:normal;color:var(--cyan);text-shadow:0 0 25px #41e7ff66}.hero p{color:var(--muted);margin:0}
+nav{display:flex;gap:8px;overflow:auto;padding:4px 0 14px;scrollbar-width:none}nav button{flex:1;min-width:max-content}
+button{border:1px solid var(--line);background:#1a2340;color:var(--text);padding:10px 14px;border-radius:12px;font-weight:750;cursor:pointer;transition:.18s}button:hover{border-color:var(--cyan);transform:translateY(-1px)}button:disabled{opacity:.45;cursor:not-allowed;transform:none}
+button.primary{background:linear-gradient(110deg,#087f9a,#6338a5);border-color:#58dff7;box-shadow:0 0 22px #41e7ff22}button.pink{background:linear-gradient(110deg,#8b287e,#4b3b9c);border-color:#b94bb8}button.small{padding:7px 10px;font-size:13px}
+.page{display:none}.page.active{display:block}
+.panel{background:linear-gradient(145deg,#151d35,#101629);border:1px solid var(--line);border-radius:18px;padding:17px;margin-bottom:15px;box-shadow:0 12px 35px #0003}
+.section-title{display:flex;align-items:center;justify-content:space-between;gap:10px;margin:2px 0 13px}.section-title h2{font-size:20px;margin:0}.muted{color:var(--muted)}.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:13px}
+.case{position:relative;overflow:hidden;text-align:center;min-height:220px;display:flex;flex-direction:column;align-items:center;justify-content:space-between;gap:9px;background:linear-gradient(155deg,#1a2543,#11172a);border:1px solid #34446d;border-radius:17px;padding:15px}
+.case:before{content:"";position:absolute;width:160px;height:160px;border-radius:50%;background:var(--glow,#41e7ff);filter:blur(65px);opacity:.16;top:0}
+.case>*{position:relative}.case-icon{font-size:55px;filter:drop-shadow(0 0 15px var(--glow,#41e7ff))}.case h3{margin:0;font-size:17px}.price{color:var(--gold);font-weight:900}
+.reel-wrap{overflow:hidden;border:1px solid #42547e;border-radius:15px;background:#080d1b;padding:12px;margin:14px 0}
+.reel{display:flex;gap:10px;transition:transform 3.5s cubic-bezier(.08,.72,.08,1);will-change:transform}
+.reel-item{flex:0 0 112px;height:115px;border:1px solid var(--line);border-radius:12px;background:#1a2340;display:grid;place-items:center;text-align:center;padding:8px;font-size:12px}
+.reel-item b{font-size:31px;display:block}.item{border:1px solid var(--line);border-radius:13px;padding:12px;background:#151d33;text-align:center}.item .emoji{font-size:31px}.item b{display:block;margin:4px 0}.rarity{font-size:11px;text-transform:uppercase;letter-spacing:.8px;color:var(--muted)}
+.common{border-color:#65718c}.uncommon{border-color:#4bbd84}.rare{border-color:#4aa7ff}.epic{border-color:#b66cff}.legendary{border-color:#ffc34d;box-shadow:0 0 18px #ffc34d22}
+.result{text-align:center;padding:15px;min-height:95px}.result .big{font-size:54px}.result h3{margin:2px}
+.actions{display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin-top:12px}
+.statrow{display:flex;justify-content:space-between;gap:10px;border-bottom:1px solid #293451;padding:9px 0}.statrow:last-child{border:0}
+input,select{background:#0b1122;border:1px solid #3a496e;color:white;border-radius:10px;padding:10px;width:100%;margin:5px 0 10px}
+.upgrade-wheel{width:180px;height:180px;border-radius:50%;border:8px solid #36466f;margin:14px auto;display:grid;place-items:center;background:conic-gradient(#41e7ff,#8e59ff,#ff4ecb,#41e7ff);box-shadow:0 0 35px #41e7ff33}
+.upgrade-wheel span{background:#10172b;border-radius:50%;width:125px;height:125px;display:grid;place-items:center;font-size:42px}
+.toast{position:fixed;bottom:20px;left:50%;transform:translateX(-50%);background:#202c49;border:1px solid var(--cyan);padding:11px 16px;border-radius:12px;z-index:10;box-shadow:0 5px 25px #0008;display:none;max-width:90%;text-align:center}
+footer{text-align:center;color:var(--muted);font-size:12px;padding:20px}
+@keyframes glow{50%{filter:brightness(1.5) drop-shadow(0 0 20px var(--cyan))}}.win{animation:glow .8s ease-in-out 3}
+@media(max-width:560px){main{padding:12px 11px 40px}.panel{padding:13px}.case{min-height:205px}.reel-item{flex-basis:100px}}
+</style>
+</head>
+<body>
+<header><div class="logo">NEON <span>CASE</span> ARENA</div><div class="coins">🪙 <span id="balance">2500</span></div></header>
+<main>
+<div class="hero"><h1>NEON <em>CASE ARENA</em></h1><p>Открывай кейсы · собирай коллекцию · улучшай предметы</p></div>
+<nav>
+<button class="primary" data-page="cases">📦 Кейсы</button><button data-page="inventory">🎒 Инвентарь</button><button data-page="upgrade">⚡ Апгрейд</button><button data-page="battle">⚔️ Батл</button><button data-page="market">🛒 Рынок</button>
+</nav>
+<section id="cases" class="page active">
+<div class="section-title"><h2>Выбери кейс</h2><span class="muted">Только виртуальные монеты</span></div>
+<div class="grid" id="caseGrid"></div>
+<div class="panel" id="opening" style="display:none">
+<div class="section-title"><h2 id="openingTitle">Открытие кейса</h2><span class="muted">Удачи!</span></div>
+<div class="reel-wrap"><div class="reel" id="reel"></div></div><div class="result" id="openResult">Предмет появится здесь</div>
+<div class="actions"><button id="openAgain" class="primary" disabled>Открыть ещё раз</button><button id="closeOpen">Закрыть</button></div>
+</div>
+</section>
+<section id="inventory" class="page">
+<div class="section-title"><h2>Мой инвентарь</h2><span class="muted" id="invCount">0 предметов</span></div>
+<div class="panel"><div class="statrow"><span>Предметов в коллекции</span><b id="invTotal">0</b></div><div class="statrow"><span>Общая стоимость</span><b id="invValue">0 🪙</b></div></div>
+<div class="grid" id="inventoryGrid"></div>
+</section>
+<section id="upgrade" class="page">
+<div class="panel">
+<h2>⚡ Апгрейдер</h2><p class="muted">Выбери предмет из инвентаря и попробуй улучшить его до более дорогого.</p>
+<label for="upgradeSelect">Твой предмет</label><select id="upgradeSelect"></select>
+<div class="upgrade-wheel"><span id="upgradeIcon">⚡</span></div>
+<div class="statrow"><span>Шанс успеха</span><b id="chance">—</b></div><div class="statrow"><span>Цель</span><b id="targetValue">—</b></div>
+<div class="actions"><button class="primary" id="upgradeBtn">ПРОКАЧАТЬ</button></div><div class="result" id="upgradeResult">Выбери предмет для начала</div>
+</div>
+</section>
+<section id="battle" class="page">
+<div class="panel"><h2>⚔️ Кейс-батл с ботом</h2><p class="muted">Оба участника открывают одинаковое количество кейсов. Победитель определяется по суммарной стоимости дропа. Это локальная игра против бота.</p>
+<label for="battleCase">Кейс для батла</label><select id="battleCase"></select>
+<label for="battleRounds">Количество раундов</label><select id="battleRounds"><option value="1">1 раунд</option><option value="2">2 раунда</option><option value="3">3 раунда</option></select>
+<div class="actions"><button class="primary" id="battleBtn">НАЧАТЬ БАТЛ</button></div><div id="battleResult" class="result">Готов к бою?</div></div>
+</section>
+<section id="market" class="page">
+<div class="section-title"><h2>🛒 Торговая площадка</h2><span class="muted">Внутриигровая</span></div>
+<div class="panel"><h3>Выставить предмет</h3><label for="sellSelect">Предмет</label><select id="sellSelect"></select><label for="sellPrice">Цена в монетах</label><input id="sellPrice" type="number" min="1" value="100"><button class="primary" id="sellBtn">Выставить на рынок</button></div>
+<h3>Лоты игроков</h3><div class="grid" id="marketGrid"></div>
+</section>
+<footer>NEON CASE ARENA · Демо-игра с виртуальными монетами. Нет реальных платежей, ставок или вывода денег.</footer>
+</main><div class="toast" id="toast"></div>
+<script>
+const cases=[
+{name:"NEON START",icon:"🟦",price:150,glow:"#41e7ff",items:[["🔹","Голубой импульс",80,"common"],["🔫","Пиксельный ствол",120,"common"],["🟣","Фиолетовый след",210,"uncommon"],["⚡","Электро-удар",360,"rare"],["🐉","Неоновый дракон",900,"epic"],["👑","Корона арены",1800,"legendary"]]},
+{name:"CYBER CITY",icon:"🌃",price:300,glow:"#a66bff",items:[["🌙","Лунный клинок",160,"common"],["🤖","Кибер-маска",260,"uncommon"],["💠","Синий кристалл",430,"rare"],["🦾","Титановая рука",700,"epic"],["🌌","Космический страж",2100,"legendary"]]},
+{name:"FIRE STORM",icon:"🔥",price:500,glow:"#ff6b45",items:[["🔥","Искра",250,"common"],["🧨","Красный заряд",390,"uncommon"],["☄️","Метеор",650,"rare"],["🦅","Огненный феникс",1200,"epic"],["🌋","Сердце вулкана",3000,"legendary"]]},
+{name:"FROST BITE",icon:"❄️",price:700,glow:"#70cfff",items:[["🧊","Ледяной осколок",320,"common"],["🐺","Снежный волк",520,"uncommon"],["💎","Морозный алмаз",850,"rare"],["👁️","Глаз метели",1600,"epic"],["❄️","Вечная зима",3900,"legendary"]]},
+{name:"GOLD RUSH",icon:"🏆",price:1000,glow:"#ffd166",items:[["🪙","Золотая пыль",450,"common"],["🎖️","Медальон",750,"uncommon"],["👑","Золотая корона",1300,"rare"],["🦁","Король прайма",2400,"epic"],["✨","Золотой рассвет",6000,"legendary"]]},
+{name:"VOID LEGEND",icon:"🌀",price:1600,glow:"#ff4ecb",items:[["🕳️","Пустотный знак",700,"common"],["🪬","Артефакт",1100,"uncommon"],["🪐","Орбита",1900,"rare"],["👾","Повелитель void",3500,"epic"],["🌠","Сверхновая",9000,"legendary"]]}
+];
+let balance=2500,inventory=[],market=[],lastCase=0,openingBusy=false;
+const $=id=>document.getElementById(id);
+function toast(t){let e=$("toast");e.textContent=t;e.style.display="block";clearTimeout(window.toastTimer);window.toastTimer=setTimeout(()=>e.style.display="none",2200)}
+function money(n){return Math.round(n).toLocaleString("ru-RU")+" 🪙"}
+function update(){ $("balance").textContent=balance.toLocaleString("ru-RU");$("invCount").textContent=inventory.length+" предметов";$("invTotal").textContent=inventory.length;$("invValue").textContent=money(inventory.reduce((s,x)=>s+x.value,0));renderInventory();renderSelects();renderMarket()}
+function itemCard(x,idx,buttons=true){return `<div class="item ${x.rarity}"><div class="emoji">${x.icon}</div><b>${x.name}</b><div class="rarity">${x.rarity}</div><strong>${money(x.value)}</strong>${buttons?`<div class="actions"><button class="small" onclick="sellItem(${idx})">Продать</button></div>`:""}</div>`}
+function renderCases(){$("caseGrid").innerHTML=cases.map((c,i)=>`<div class="case" style="--glow:${c.glow}"><div class="case-icon">${c.icon}</div><h3>${c.name}</h3><div class="price">${money(c.price)}</div><button class="primary" onclick="openCase(${i})">ОТКРЫТЬ</button></div>`).join("")}
+function renderInventory(){$("inventoryGrid").innerHTML=inventory.length?inventory.map((x,i)=>itemCard(x,i)).join(""):'<div class="panel muted">Инвентарь пока пуст. Открой первый кейс!</div>'}
+function renderSelects(){let opts=inventory.map((x,i)=>`<option value="${i}">${x.icon} ${x.name} — ${x.value} 🪙</option>`).join("");$("upgradeSelect").innerHTML=opts||'<option value="">Нет предметов</option>';$("sellSelect").innerHTML=opts||'<option value="">Нет предметов</option>';$("battleCase").innerHTML=cases.map((c,i)=>`<option value="${i}">${c.name} — ${c.price} 🪙</option>`).join("");calcUpgrade()}
+function renderMarket(){$("marketGrid").innerHTML=market.length?market.map((x,i)=>`<div class="item ${x.rarity}"><div class="emoji">${x.icon}</div><b>${x.name}</b><div class="rarity">Лот игрока</div><strong>${money(x.price)}</strong><div class="actions"><button class="small" onclick="buyLot(${i})">Купить</button></div></div>`).join(""):'<div class="panel muted">Пока нет лотов. Выставь предмет из своего инвентаря.</div>'}
+function pick(c){let total=c.items.reduce((s,x)=>s+(x[3]==="common"?48:x[3]==="uncommon"?27:x[3]==="rare"?15:x[3]==="epic"?8:2),0),r=Math.random()*total;for(let a of c.items){r-=a[3]==="common"?48:a[3]==="uncommon"?27:a[3]==="rare"?15:a[3]==="epic"?8:2;if(r<=0)return {icon:a[0],name:a[1],value:a[2],rarity:a[3]}}let a=c.items[0];return{icon:a[0],name:a[1],value:a[2],rarity:a[3]}}
+function openCase(i){if(openingBusy)return;let c=cases[i];if(balance<c.price){toast("Не хватает монет!");return}balance-=c.price;lastCase=i;openingBusy=true;update();$("opening").style.display="block";$("openingTitle").textContent="Открываем "+c.name;$("openResult").innerHTML="🎰 Барабаны вращаются...";$("openAgain").disabled=true;let reel=$("reel");reel.style.transition="none";reel.style.transform="translateX(0)";let chosen=pick(c),pool=[];for(let n=0;n<24;n++){let x=pick(c);pool.push(x)}pool[19]=chosen;reel.innerHTML=pool.map(x=>`<div class="reel-item ${x.rarity}"><b>${x.icon}</b>${x.name}</div>`).join("");requestAnimationFrame(()=>requestAnimationFrame(()=>{reel.style.transition="transform 3.5s cubic-bezier(.08,.72,.08,1)";reel.style.transform=`translateX(-${19*122-35}px)`}));setTimeout(()=>{inventory.push(chosen);$("openResult").innerHTML=`<div class="big">${chosen.icon}</div><h3>${chosen.name}</h3><span class="${chosen.rarity}">${chosen.rarity.toUpperCase()}</span><p class="price">${money(chosen.value)}</p>`;$("openResult").classList.add("win");$("openAgain").disabled=false;openingBusy=false;update();toast("Предмет добавлен в инвентарь!")},3700)}
+$("openAgain").onclick=()=>openCase(lastCase);$("closeOpen").onclick=()=>{$("opening").style.display="none";$("openResult").classList.remove("win")};
+function sellItem(i){if(!inventory[i])return;let x=inventory.splice(i,1)[0];balance+=x.value;update();toast("Продано за "+money(x.value))}
+function calcUpgrade(){let i=+$("upgradeSelect").value,x=inventory[i];if(!x){$("chance").textContent="—";$("targetValue").textContent="—";$("upgradeIcon").textContent="⚡";return}let target=x.value*2.2;$("chance").textContent="45%";$("targetValue").textContent=money(target);$("upgradeIcon").textContent=x.icon}
+$("upgradeSelect").onchange=calcUpgrade;
+$("upgradeBtn").onclick=()=>{let i=+$("upgradeSelect").value,x=inventory[i];if(!x){toast("Сначала открой кейс");return}let target=x.value*2.2;if(Math.random()<.45){let next={...x,name:x.name+" ★",value:Math.round(target),rarity:"epic"};inventory[i]=next;$("upgradeResult").innerHTML=`<div class="big">✨</div><h3>УСПЕШНО!</h3>${next.name}<br>${money(next.value)}`;toast("Апгрейд успешен!")}else{inventory.splice(i,1);$("upgradeResult").innerHTML='<div class="big">💥</div><h3>Не получилось</h3>Предмет потерян в тренировочном апгрейде.';toast("Попробуй ещё раз!")}update()};
+$("battleBtn").onclick=()=>{let ci=+$("battleCase").value,rounds=+$("battleRounds").value,c=cases[ci],cost=c.price*rounds;if(balance<cost){toast("Не хватает монет на батл");return}balance-=cost;let you=0,bot=0,yd=[],bd=[];for(let n=0;n<rounds;n++){let a=pick(c),b=pick(c);yd.push(a);bd.push(b);you+=a.value;bot+=b.value}let win=you>=bot; if(win)balance+=cost*2;yd.forEach(x=>inventory.push(x));$("battleResult").innerHTML=`<h3>${win?"🏆 ПОБЕДА!":"🤖 БОТ ПОБЕДИЛ"}</h3><p>Ты: <b>${money(you)}</b> · Бот: <b>${money(bot)}</b></p><p>Твои предметы: ${yd.map(x=>x.icon).join(" ")}</p><p>Предметы бота: ${bd.map(x=>x.icon).join(" ")}</p><small>${win?"Награда за победу начислена.":"Твои предметы остаются у тебя."}</small>`;update()};
+$("sellBtn").onclick=()=>{let i=+$("sellSelect").value,x=inventory[i],price=Math.floor(+$("sellPrice").value);if(!x||!Number.isFinite(price)||price<1){toast("Выбери предмет и укажи цену");return}inventory.splice(i,1);market.push({...x,price});update();toast("Лот выставлен!")};
+function buyLot(i){let x=market[i];if(!x)return;if(balance<x.price){toast("Не хватает монет");return}balance-=x.price;inventory.push({...x,value:x.price});market.splice(i,1);update();toast("Покупка успешна!")}
+document.querySelectorAll("nav button").forEach(b=>b.onclick=()=>{document.querySelectorAll("nav button").forEach(x=>x.classList.remove("primary"));b.classList.add("primary");document.querySelectorAll(".page").forEach(p=>p.classList.remove("active"));$(b.dataset.page).classList.add("active")});
+renderCases();update();
+</script>
+</body></html>
